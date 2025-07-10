@@ -1,12 +1,25 @@
 CC = clang
-CFLAGS = -Wall -Wextra -std=c99
-TARGET = main
-SOURCES = main.c
+CFLAGS = -Wall -Wextra -g -Iinclude
+LDFLAGS = -lfl
 
-$(TARGET): $(SOURCES) $(HEADERS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SOURCES)
+SRCDIR = src
+INCDIR = include
+OBJDIR = build
+
+SOURCES = $(wildcard $(SRCDIR)/*.c)
+OBJECTS = $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+
+TARGET = verify
+
+all: $(OBJECTS)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
 
 clean:
-	rm -f $(TARGET)
+	rm -rf $(OBJDIR) $(TARGET)
 
-.PHONY: clean
+.PHONY: all clean
