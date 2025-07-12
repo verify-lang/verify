@@ -189,17 +189,17 @@ block:
   ;
 
 if_stmt:
-  IF expression block {
-    $$ = ast_create_if($2, $3, NULL);
+  IF '(' expression ')' block {
+    $$ = ast_create_if($3, $5, NULL);
   }
-  | IF expression block ELSE block {
-    $$ = ast_create_if($2, $3, $5);
+  | IF '(' expression ')' block ELSE block {
+    $$ = ast_create_if($3, $5, $7);
   }
   ;
 
 while_stmt:
-  WHILE expression block {
-    $$ = ast_create_while($2, $3);
+  WHILE '(' expression ')' block {
+    $$ = ast_create_while($3, $5);
   }
   ;
 
