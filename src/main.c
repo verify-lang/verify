@@ -1,4 +1,47 @@
-int main(int argc, char const* argv[])
+#include <stdio.h>
+#include <stdlib.h>
+#include "ast.h"
+#include "parser.h"
+
+extern FILE* yyin;
+extern ast_node_t* root;
+
+int main(int argc, char* argv[])
 {
+  if (argc > 1)
+  {
+    yyin = fopen(argv[1], "r");
+
+    if (!yyin)
+    {
+      fprintf(stderr, "error: cannot open file %s\n", argv[1]);
+      return 1;
+    }
+  }
+  else
+  {
+    yyin = stdin;
+  }
+
+  if (yyparse() == 0)
+  {
+    if (root)
+    {
+      printf("AST:\n");
+      ast_print(root, 0);
+      ast_free(root);
+    }
+  }
+  else
+  {
+    fprintf(stderr, "error: cannot parse source %s\n", argv[1]);
+    return 1;
+  }
+
+  if (yyin != stdin)
+  {
+    fclose(yyin);
+  }
+
   return 0;
 }
