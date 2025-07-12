@@ -14,7 +14,7 @@
 
 "def"           { return DEF; }
 "let"           { return LET; }
-"mut"           { return MUT; }
+"const"           { return CONST; }
 "if"            { return IF; }
 "else"          { return ELSE; }
 "while"         { return WHILE; }

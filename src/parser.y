@@ -91,7 +91,7 @@ void reset_statements() {
 %token <int_val> INT_LITERAL
 %token <bool_val> BOOL_LITERAL
 %token <string_val> STRING_LITERAL IDENTIFIER
-%token DEF LET MUT IF ELSE WHILE RETURN
+%token DEF LET CONST IF ELSE WHILE RETURN
 %token INT_TYPE BOOL_TYPE STRING_TYPE
 %token EQ NE LE GE AND OR ARROW
 
@@ -162,10 +162,10 @@ parameter:
 
 var_decl:
   LET IDENTIFIER ':' type_spec '=' expression {
-    $$ = ast_create_var_decl($2, $4, $6, 0);
-  }
-  | MUT IDENTIFIER ':' type_spec '=' expression {
     $$ = ast_create_var_decl($2, $4, $6, 1);
+  }
+  | CONST IDENTIFIER ':' type_spec '=' expression {
+    $$ = ast_create_var_decl($2, $4, $6, 0);
   }
   ;
 

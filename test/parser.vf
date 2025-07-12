@@ -5,7 +5,7 @@ def add(a: Int, b: Int) -> Int {
 def main() -> Int {
   let x: Int = 5;
   let y: Int = 10;
-  mut n: Int = add(x, y);
+  const n: Int = add(x, y);
 
   if n > 10 {
     return 1;
