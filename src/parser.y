@@ -282,6 +282,7 @@ type_spec:
   INT_TYPE { $$ = type_create_int(); }
   | BOOL_TYPE { $$ = type_create_bool(); }
   | STRING_TYPE { $$ = type_create_string(); }
+  | IDENTIFIER { $$ = type_create_custom($1); }
   ;
 
 block:

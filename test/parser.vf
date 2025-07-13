@@ -2,8 +2,8 @@ struct Point {
   x: Int;
   y: Int;
   
-  def add(self, other: Int) -> Int {
-    let o: Int = Point();
+  def add(self, other: Point) -> Point {
+    let o: Point = Point();
     //o.x = self.x + other.x;
     //o.y = self.y + other.y;
     o = self.x + other.x;

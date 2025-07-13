@@ -42,10 +42,23 @@ type_t* type_create_function(type_t* return_type, type_t** param_types,
   return type;
 }
 
+type_t* type_create_custom(char* name)
+{
+  type_t* type = malloc(sizeof(type_t));
+  type->kind = TYPE_CUSTOM;
+  type->data.custom_name = strdup(name);
+  return type;
+}
+
 void type_free(type_t* type)
 {
   if (!type)
     return;
+
+  if (type->kind == TYPE_CUSTOM)
+  {
+    free(type->data.custom_name);
+  }
 
   if (type->kind == TYPE_FUNCTION)
   {
@@ -125,6 +138,8 @@ char* type_to_string(type_t* type)
     return strdup("Bool");
   case TYPE_STRING:
     return strdup("String");
+  case TYPE_CUSTOM:
+    return strdup(type->data.custom_name);
   case TYPE_FUNCTION:
     return strdup("function");
   case TYPE_STRUCT:

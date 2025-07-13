@@ -313,6 +313,8 @@ void ast_free(ast_node_t* node)
   free(node);
 }
 
+// @fix: there is some weird double free issue
+
 void ast_print(ast_node_t* node, int indent)
 {
   if (!node)
