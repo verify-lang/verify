@@ -322,6 +322,9 @@ assignment_expr:
   IDENTIFIER '=' expression {
     $$ = ast_create_assignment(ast_create_identifier($1), $3);
   }
+  | field_access_expr '=' expression {
+    $$ = ast_create_assignment($1, $3);
+  }
   ;
 
 expression:
