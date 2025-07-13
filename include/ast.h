@@ -19,7 +19,9 @@ typedef enum
   AST_LITERAL_INT,
   AST_LITERAL_BOOL,
   AST_LITERAL_STRING,
-  AST_ASSIGNMENT
+  AST_ASSIGNMENT,
+  AST_STRUCT_DECL,
+  AST_FIELD_ACCESS
 } ast_node_type_t;
 
 typedef enum
@@ -139,6 +141,21 @@ typedef struct ast_node
       struct ast_node* target;
       struct ast_node* value;
     } assignment;
+
+    struct
+    {
+      char* name;
+      field_t** fields;
+      int field_count;
+      method_t** methods;
+      int method_count;
+    } struct_decl;
+
+    struct
+    {
+      struct ast_node* object;
+      char* field_name;
+    } field_access;
   } data;
 } ast_node_t;
 
@@ -162,6 +179,11 @@ ast_node_t* ast_create_literal_int(int value);
 ast_node_t* ast_create_literal_bool(int value);
 ast_node_t* ast_create_literal_string(char* value);
 ast_node_t* ast_create_assignment(ast_node_t* target, ast_node_t* value);
+
+ast_node_t* ast_create_struct_decl(char* name, field_t** fields,
+                                   int field_count, method_t** methods,
+                                   int method_count);
+ast_node_t* ast_create_field_access(ast_node_t* object, char* field_name);
 
 void ast_free(ast_node_t* node);
 void ast_print(ast_node_t* node, int indent);

@@ -59,6 +59,25 @@ void type_free(type_t* type)
     free(type->data.function.param_types);
   }
 
+  if (type->kind == TYPE_STRUCT)
+  {
+    free(type->data.struct_type.name);
+
+    for (int i = 0; i < type->data.struct_type.field_count; i++)
+    {
+      field_free(type->data.struct_type.fields[i]);
+    }
+
+    free(type->data.struct_type.fields);
+
+    for (int i = 0; i < type->data.struct_type.method_count; i++)
+    {
+      method_free(type->data.struct_type.methods[i]);
+    }
+
+    free(type->data.struct_type.methods);
+  }
+
   free(type);
 }
 
@@ -108,9 +127,67 @@ char* type_to_string(type_t* type)
     return strdup("String");
   case TYPE_FUNCTION:
     return strdup("function");
+  case TYPE_STRUCT:
+    return strdup(type->data.struct_type.name);
   }
 
   return strdup("unknown");
+}
+
+type_t* type_create_struct(char* name, field_t** fields, int field_count,
+                           method_t** methods, int method_count)
+{
+  type_t* type = malloc(sizeof(type_t));
+  type->kind = TYPE_STRUCT;
+  type->data.struct_type.name = strdup(name);
+  type->data.struct_type.fields = fields;
+  type->data.struct_type.field_count = field_count;
+  type->data.struct_type.methods = methods;
+  type->data.struct_type.method_count = method_count;
+  return type;
+}
+
+field_t* field_create(char* name, type_t* type)
+{
+  field_t* field = malloc(sizeof(field_t));
+  field->name = strdup(name);
+  field->type = type;
+  return field;
+}
+
+void field_free(field_t* field)
+{
+  if (!field)
+    return;
+  free(field->name);
+  type_free(field->type);
+  free(field);
+}
+
+method_t* method_create(char* name, parameter_t* params, int param_count,
+                        type_t* return_type, struct ast_node* body)
+{
+  method_t* method = malloc(sizeof(method_t));
+  method->name = strdup(name);
+  method->params = params;
+  method->param_count = param_count;
+  method->return_type = return_type;
+  method->body = body;
+  return method;
+}
+
+void method_free(method_t* method)
+{
+  if (!method)
+    return;
+  free(method->name);
+  for (int i = 0; i < method->param_count; i++)
+  {
+    parameter_free(&method->params[i]);
+  }
+  free(method->params);
+  type_free(method->return_type);
+  free(method);
 }
 
 parameter_t* parameter_create(char* name, type_t* type)

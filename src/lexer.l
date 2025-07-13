@@ -15,6 +15,9 @@
 "//".*          { /* ignore single-line comments */ }
 "/*"([^*]|\*+[^*/])*\*+"/" { /* ignore multi-line comments */ }
 
+"struct"        { return STRUCT; }
+"self"          { return SELF; }
+"."             { return '.'; }
 "def"           { return DEF; }
 "let"           { return LET; }
 "const"           { return CONST; }

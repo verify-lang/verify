@@ -161,6 +161,31 @@ ast_node_t* ast_create_assignment(ast_node_t* target, ast_node_t* value)
   return node;
 }
 
+ast_node_t* ast_create_struct_decl(char* name, field_t** fields,
+                                   int field_count, method_t** methods,
+                                   int method_count)
+{
+  ast_node_t* node = malloc(sizeof(ast_node_t));
+  node->type = AST_STRUCT_DECL;
+  node->data_type = NULL;
+  node->data.struct_decl.name = strdup(name);
+  node->data.struct_decl.fields = fields;
+  node->data.struct_decl.field_count = field_count;
+  node->data.struct_decl.methods = methods;
+  node->data.struct_decl.method_count = method_count;
+  return node;
+}
+
+ast_node_t* ast_create_field_access(ast_node_t* object, char* field_name)
+{
+  ast_node_t* node = malloc(sizeof(ast_node_t));
+  node->type = AST_FIELD_ACCESS;
+  node->data_type = NULL;
+  node->data.field_access.object = object;
+  node->data.field_access.field_name = strdup(field_name);
+  return node;
+}
+
 void ast_free(ast_node_t* node)
 {
   if (!node)
@@ -254,6 +279,30 @@ void ast_free(ast_node_t* node)
   case AST_ASSIGNMENT:
     ast_free(node->data.assignment.target);
     ast_free(node->data.assignment.value);
+    break;
+
+  case AST_STRUCT_DECL:
+    free(node->data.struct_decl.name);
+
+    for (int i = 0; i < node->data.struct_decl.field_count; i++)
+    {
+      field_free(node->data.struct_decl.fields[i]);
+    }
+
+    free(node->data.struct_decl.fields);
+
+    for (int i = 0; i < node->data.struct_decl.method_count; i++)
+    {
+      method_free(node->data.struct_decl.methods[i]);
+    }
+
+    free(node->data.struct_decl.methods);
+
+    break;
+
+  case AST_FIELD_ACCESS:
+    ast_free(node->data.field_access.object);
+    free(node->data.field_access.field_name);
     break;
 
   default:
@@ -380,6 +429,30 @@ void ast_print(ast_node_t* node, int indent)
     printf("Assignment\n");
     ast_print(node->data.assignment.target, indent + 1);
     ast_print(node->data.assignment.value, indent + 1);
+    break;
+
+  case AST_STRUCT_DECL:
+    printf("StructDecl: %s\n", node->data.struct_decl.name);
+
+    for (int i = 0; i < node->data.struct_decl.field_count; i++)
+    {
+      for (int j = 0; j < indent + 1; j++)
+        printf("  ");
+      printf("Field: %s\n", node->data.struct_decl.fields[i]->name);
+    }
+
+    for (int i = 0; i < node->data.struct_decl.method_count; i++)
+    {
+      for (int j = 0; j < indent + 1; j++)
+        printf("  ");
+      printf("Method: %s\n", node->data.struct_decl.methods[i]->name);
+    }
+
+    break;
+
+  case AST_FIELD_ACCESS:
+    printf("FieldAccess: %s\n", node->data.field_access.field_name);
+    ast_print(node->data.field_access.object, indent + 1);
     break;
   }
 }
