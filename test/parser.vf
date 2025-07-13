@@ -14,4 +14,9 @@ def main() -> Int {
   }
 
   while (n > 2) {}
+  //...
+  /*...*/
+  /*//*/
+  true;
+  return 0;
 }
