@@ -244,16 +244,20 @@ method_decl:
   ;
 
 function_def:
-  DEF IDENTIFIER '(' ')' ARROW type_spec block {
+  /* DEF IDENTIFIER '(' ')' ARROW type_spec block { */
+  type_spec IDENTIFIER '(' ')' block {
     reset_params();
-    $$ = ast_create_function($2, NULL, 0, $6, $7);
+    // $$ = ast_create_function($2, NULL, 0, $6, $7);
+    $$ = ast_create_function($2, NULL, 0, $1, $5);
   }
-  | DEF IDENTIFIER '(' parameter_list ')' ARROW type_spec block {
+  /* | DEF IDENTIFIER '(' parameter_list ')' ARROW type_spec block { */
+  | type_spec IDENTIFIER '(' parameter_list ')' block {
     parameter_t *param_copy = malloc(param_count * sizeof(parameter_t));
     memcpy(param_copy, params, param_count * sizeof(parameter_t));
     int count = param_count;
     reset_params();
-    $$ = ast_create_function($2, param_copy, count, $7, $8);
+    // $$ = ast_create_function($2, param_copy, count, $7, $8);
+    $$ = ast_create_function($2, param_copy, count, $1, $6);
   }
   ;
 
@@ -263,9 +267,9 @@ parameter_list:
   ;
 
 parameter:
-  IDENTIFIER ':' type_spec { 
-    $$.name = $1;
-    $$.type = $3;
+  type_spec IDENTIFIER { 
+    $$.name = $2;
+    $$.type = $1;
   }
   ;
 

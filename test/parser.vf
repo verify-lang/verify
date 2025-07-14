@@ -2,7 +2,7 @@ struct Point {
   x: Int;
   y: Int;
   
-  def add(self, other: Point) -> Point {
+  def add(self, Point other) -> Point {
     Point o = Point();
     o.x = self.x + other.x;
     o.y = self.y + other.y;
@@ -14,11 +14,11 @@ struct Point {
   }
 }
 
-def add(a: Int, b: Int) -> Int {
+int add(int a, int b) {
   return a + b;
 }
 
-def main() -> Int {
+int main() {
   int x = 5;
   int y = 10;
   const int n = add(x, y);
