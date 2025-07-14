@@ -3,7 +3,7 @@ struct Point {
   y: Int;
   
   def add(self, other: Point) -> Point {
-    let o: Point = Point();
+    Point o = Point();
     o.x = self.x + other.x;
     o.y = self.y + other.y;
     return o;
@@ -19,8 +19,8 @@ def add(a: Int, b: Int) -> Int {
 }
 
 def main() -> Int {
-  let x: Int = 5;
-  let y: Int = 10;
+  int x = 5;
+  int y = 10;
   const n: Int = add(x, y);
 
   if (n > 10) {
