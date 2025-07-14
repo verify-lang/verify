@@ -21,7 +21,7 @@ def add(a: Int, b: Int) -> Int {
 def main() -> Int {
   int x = 5;
   int y = 10;
-  const n: Int = add(x, y);
+  const int n = add(x, y);
 
   if (n > 10) {
     return 1;

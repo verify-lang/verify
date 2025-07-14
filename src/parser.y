@@ -275,8 +275,10 @@ var_decl:
     // $$ = ast_create_var_decl($2, $4, $6, 1);
     $$ = ast_create_var_decl($2, $1, $4, 1);
   }
-  | CONST IDENTIFIER ':' type_spec '=' expression {
-    $$ = ast_create_var_decl($2, $4, $6, 0);
+  /* | CONST IDENTIFIER ':' type_spec '=' expression { */
+  | CONST type_spec IDENTIFIER '=' expression {
+    // $$ = ast_create_var_decl($2, $4, $6, 0);
+    $$ = ast_create_var_decl($3, $2, $5, 0);
   }
   ;
 
