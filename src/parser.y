@@ -211,8 +211,9 @@ struct_member:
   ;
 
 field_decl:
-  IDENTIFIER ':' type_spec ';' {
-    field_t *field = field_create($1, $3);
+  /* IDENTIFIER ':' type_spec ';' { */
+  type_spec IDENTIFIER ';' {
+    field_t *field = field_create($2, $1);
     add_field(field);
   }
   ;

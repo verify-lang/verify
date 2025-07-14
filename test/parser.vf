@@ -1,6 +1,6 @@
 struct Point {
-  x: Int;
-  y: Int;
+  int x;
+  int y;
 
   Point add(self, Point other) {
     Point o = Point();
