@@ -1,17 +1,19 @@
 struct Point {
   x: Int;
   y: Int;
-  
-  def add(self, Point other) -> Point {
+
+  Point add(self, Point other) {
     Point o = Point();
     o.x = self.x + other.x;
     o.y = self.y + other.y;
     return o;
   }
 
-  def dist(self) -> Int {
+  int dist(self) {
     return self.x * self.x + self.y * self.y;
   }
+
+  int to_string() {}
 }
 
 int add(int a, int b) {

@@ -218,26 +218,31 @@ field_decl:
   ;
 
 method_decl:
-  DEF IDENTIFIER '(' SELF ')' ARROW type_spec block {
+  /* DEF IDENTIFIER '(' SELF ')' ARROW type_spec block { */
+  type_spec IDENTIFIER '(' SELF ')' block {
     parameter_t *self_param = malloc(sizeof(parameter_t));
     self_param->name = strdup("self");
     self_param->type = NULL;
-    method_t *method = method_create($2, self_param, 1, $7, $8);
+    // method_t *method = method_create($2, self_param, 1, $7, $8);
+    method_t *method = method_create($2, self_param, 1, $1, $6);
     add_method(method);
     reset_params();
   }
-  | DEF IDENTIFIER '(' SELF ',' parameter_list ')' ARROW type_spec block {
+  /* | DEF IDENTIFIER '(' SELF ',' parameter_list ')' ARROW type_spec block { */
+  | type_spec IDENTIFIER '(' SELF ',' parameter_list ')' block {
     parameter_t *param_copy = malloc((param_count + 1) * sizeof(parameter_t));
     param_copy[0].name = strdup("self");
     param_copy[0].type = NULL;
     memcpy(&param_copy[1], params, param_count * sizeof(parameter_t));
     int count = param_count + 1;
-    method_t *method = method_create($2, param_copy, count, $9, $10);
+    // method_t *method = method_create($2, param_copy, count, $9, $10);
+    method_t *method = method_create($2, param_copy, count, $1, $8);
     add_method(method);
     reset_params();
   }
-  | DEF IDENTIFIER '(' ')' ARROW type_spec block {
-    method_t *method = method_create($2, NULL, 0, $6, $7);
+  /* | DEF IDENTIFIER '(' ')' ARROW type_spec block { */
+  | type_spec IDENTIFIER '(' ')' block {
+    method_t *method = method_create($2, NULL, 0, $1, $5);
     add_method(method);
     reset_params();
   }
