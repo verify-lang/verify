@@ -69,7 +69,7 @@ typedef struct ast_node
       char* name;
       type_t* type;
       struct ast_node* initializer;
-      int is_mutable;
+      int is_const;
     } var_decl;
 
     struct

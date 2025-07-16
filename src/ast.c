@@ -37,7 +37,7 @@ ast_node_t* ast_create_var_decl(char* name, type_t* type,
   node->data.var_decl.name = strdup(name);
   node->data.var_decl.type = type;
   node->data.var_decl.initializer = initializer;
-  node->data.var_decl.is_mutable = is_mutable;
+  node->data.var_decl.is_const = is_mutable;
   return node;
 }
 
@@ -341,7 +341,7 @@ void ast_print(ast_node_t* node, int indent)
     break;
 
   case AST_VAR_DECL:
-    printf("VarDecl: %s %s\n", node->data.var_decl.is_mutable ? "mut" : "let",
+    printf("VarDecl: %s %s\n", node->data.var_decl.is_const ? "const" : "mut",
            node->data.var_decl.name);
 
     if (node->data.var_decl.initializer)
