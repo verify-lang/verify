@@ -9,7 +9,8 @@ typedef enum
   TYPE_STRING,
   TYPE_FUNCTION,
   TYPE_STRUCT,
-  TYPE_CUSTOM
+  TYPE_CUSTOM,
+  TYPE_GENERIC
 } type_kind_t;
 
 typedef struct type
@@ -32,6 +33,13 @@ typedef struct type
       struct method** methods;
       int method_count;
     } struct_type;
+
+    struct
+    {
+      char* name;
+      struct type** type_args;
+      int type_arg_count;
+    } generic_type;
 
     char* custom_name;
   } data;
@@ -64,6 +72,7 @@ type_t* type_create_int(void);
 type_t* type_create_bool(void);
 type_t* type_create_string(void);
 type_t* type_create_custom(char* name);
+type_t* type_create_generic(char* name, type_t** type_args, int type_arg_count);
 type_t* type_create_function(type_t* return_type, type_t** param_types,
                              int param_count);
 

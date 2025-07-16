@@ -50,6 +50,16 @@ type_t* type_create_custom(char* name)
   return type;
 }
 
+type_t* type_create_generic(char* name, type_t** type_args, int type_arg_count)
+{
+  type_t* type = malloc(sizeof(type_t));
+  type->kind = TYPE_GENERIC;
+  type->data.generic_type.name = strdup(name);
+  type->data.generic_type.type_args = type_args;
+  type->data.generic_type.type_arg_count = type_arg_count;
+  return type;
+}
+
 void type_free(type_t* type)
 {
   if (!type)
@@ -58,6 +68,18 @@ void type_free(type_t* type)
   if (type->kind == TYPE_CUSTOM)
   {
     free(type->data.custom_name);
+  }
+
+  if (type->kind == TYPE_GENERIC)
+  {
+    free(type->data.generic_type.name);
+
+    for (int i = 0; i < type->data.generic_type.type_arg_count; i++)
+    {
+      type_free(type->data.generic_type.type_args[i]);
+    }
+
+    free(type->data.generic_type.type_args);
   }
 
   if (type->kind == TYPE_FUNCTION)
@@ -144,6 +166,8 @@ char* type_to_string(type_t* type)
     return strdup("function");
   case TYPE_STRUCT:
     return strdup(type->data.struct_type.name);
+  case TYPE_GENERIC:
+    return strdup(type->data.generic_type.name);
   }
 
   return strdup("unknown");

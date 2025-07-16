@@ -21,6 +21,7 @@ int add(int a, int b) {
 }
 
 int main() {
+  Point<int> o = Point(0);
   int x = 5;
   int y = 10;
   const int n = add(x, y);

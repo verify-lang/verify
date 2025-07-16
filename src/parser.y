@@ -297,6 +297,18 @@ type_spec:
   | BOOL_TYPE { $$ = type_create_bool(); }
   | STRING_TYPE { $$ = type_create_string(); }
   | IDENTIFIER { $$ = type_create_custom($1); }
+  | IDENTIFIER '<' type_list '>' { 
+    type_t **type_copy = malloc(arg_count * sizeof(type_t*));
+    for (int i = 0; i < arg_count; i++) { type_copy[i] = (type_t*)args[i]; }
+    int count = arg_count;
+    reset_args();
+    $$ = type_create_generic($1, type_copy, count);
+  }
+  ;
+
+type_list:
+  type_spec { add_arg((ast_node_t*)$1); }
+  | type_list ',' type_spec { add_arg((ast_node_t*)$3); }
   ;
 
 block:
