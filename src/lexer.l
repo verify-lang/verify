@@ -15,6 +15,11 @@
 "//".*          { /* ignore single-line comments */ }
 "/*"([^*]|\*+[^*/])*\*+"/" { /* ignore multi-line comments */ }
 
+"import"        { return IMPORT; }
+"export"        { return EXPORT; }
+"extern"        { return EXTERN; }
+"from"          { return FROM; }
+"as"            { return AS; }
 "struct"        { return STRUCT; }
 "self"          { return SELF; }
 "."             { return '.'; }

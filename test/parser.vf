@@ -1,3 +1,12 @@
+import a;
+import b as c;
+from d import e;
+from f import g, h, i;
+from j import k as l;
+from m import *;
+
+extern void _start() {};
+
 struct Point {
   int x;
   int y;
@@ -16,7 +25,7 @@ struct Point {
   int to_string() {}
 }
 
-int add(int a, int b) {
+export int add(int a, int b) {
   return a + b;
 }
 

@@ -134,6 +134,7 @@ void reset_methods() {
 %token <int_val> INT_LITERAL
 %token <bool_val> BOOL_LITERAL
 %token <string_val> STRING_LITERAL IDENTIFIER
+%token IMPORT EXPORT EXTERN FROM AS
 %token DEF LET CONST IF ELSE WHILE RETURN
 %token INT_TYPE BOOL_TYPE STRING_TYPE
 %token EQ NE LE GE AND OR ARROW
@@ -145,6 +146,9 @@ void reset_methods() {
 %type <type> type_spec
 %type <param> parameter
 %type <node> struct_decl field_access_expr
+%type <node> import_stmt export_stmt extern_stmt
+%type <string_val> module_path
+%type <node> import_list import_item
 
 %left OR
 %left AND
@@ -179,6 +183,60 @@ statement:
   | return_stmt ';' { $$ = $1; }
   | assignment_expr ';' { $$ = $1; }
   | expression ';' { $$ = $1; }
+  | import_stmt ';' { $$ = $1; }
+  | export_stmt { $$ = $1; }
+  | extern_stmt ';' { $$ = $1; }
+  ;
+
+import_stmt:
+  IMPORT module_path { $$ = ast_create_import($2, NULL); }
+  | IMPORT module_path AS IDENTIFIER { $$ = ast_create_import($2, $4); }
+  | FROM module_path IMPORT IDENTIFIER { $$ = ast_create_from_import($2, $4, NULL); }
+  | FROM module_path IMPORT IDENTIFIER AS IDENTIFIER { $$ = ast_create_from_import($2, $4, $6); }
+  | FROM module_path IMPORT import_list { 
+    char **import_copy = malloc(arg_count * sizeof(char*));
+    for (int i = 0; i < arg_count; i++) {
+      import_copy[i] = (char*)args[i];
+    }
+    int count = arg_count;
+    reset_args();
+    $$ = ast_create_from_import_list($2, import_copy, count);
+  }
+  | FROM module_path IMPORT '*' { $$ = ast_create_from_import($2, "*", NULL); }
+  ;
+
+import_list:
+  import_item { add_arg((ast_node_t*)$1); }
+  | import_list ',' import_item { add_arg((ast_node_t*)$3); }
+  ;
+
+import_item:
+  IDENTIFIER { $$ = (ast_node_t*)$1; }
+  | IDENTIFIER AS IDENTIFIER { 
+    char *item = malloc(strlen($1) + strlen($3) + 5);
+    sprintf(item, "%s as %s", $1, $3);
+    $$ = (ast_node_t*)item;
+  }
+  ;
+
+module_path:
+  IDENTIFIER { $$ = $1; }
+  | module_path '.' IDENTIFIER { 
+    char *path = malloc(strlen($1) + strlen($3) + 2);
+    sprintf(path, "%s.%s", $1, $3);
+    $$ = path;
+  }
+  ;
+
+export_stmt:
+  EXPORT function_def { $$ = ast_create_export($2); }
+  | EXPORT struct_decl { $$ = ast_create_export($2); }
+  | EXPORT var_decl ';' { $$ = ast_create_export($2); }
+  ;
+
+extern_stmt:
+  EXTERN function_def { $$ = ast_create_extern($2); }
+  | EXTERN var_decl { $$ = ast_create_extern($2); }
   ;
 
 struct_decl:

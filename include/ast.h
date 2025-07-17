@@ -21,7 +21,12 @@ typedef enum
   AST_LITERAL_STRING,
   AST_ASSIGNMENT,
   AST_STRUCT_DECL,
-  AST_FIELD_ACCESS
+  AST_FIELD_ACCESS,
+  AST_IMPORT,
+  AST_FROM_IMPORT,
+  AST_FROM_IMPORT_LIST,
+  AST_EXPORT,
+  AST_EXTERN
 } ast_node_type_t;
 
 typedef enum
@@ -156,6 +161,36 @@ typedef struct ast_node
       struct ast_node* object;
       char* field_name;
     } field_access;
+
+    struct
+    {
+      char* module_path;
+      char* alias;
+    } import;
+
+    struct
+    {
+      char* module_path;
+      char* name;
+      char* alias;
+    } from_import;
+
+    struct
+    {
+      char* module_path;
+      char** import_names;
+      int import_count;
+    } from_import_list;
+
+    struct
+    {
+      struct ast_node* declaration;
+    } export;
+
+    struct
+    {
+      struct ast_node* declaration;
+    } extern_decl;
   } data;
 } ast_node_t;
 
@@ -184,6 +219,13 @@ ast_node_t* ast_create_struct_decl(char* name, field_t** fields,
                                    int field_count, method_t** methods,
                                    int method_count);
 ast_node_t* ast_create_field_access(ast_node_t* object, char* field_name);
+
+ast_node_t* ast_create_import(char* module_path, char* alias);
+ast_node_t* ast_create_from_import(char* module_path, char* name, char* alias);
+ast_node_t* ast_create_from_import_list(char* module_path, char** import_names,
+                                        int import_count);
+ast_node_t* ast_create_export(ast_node_t* declaration);
+ast_node_t* ast_create_extern(ast_node_t* declaration);
 
 void ast_free(ast_node_t* node);
 void ast_print(ast_node_t* node, int indent);

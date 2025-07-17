@@ -186,6 +186,52 @@ ast_node_t* ast_create_field_access(ast_node_t* object, char* field_name)
   return node;
 }
 
+ast_node_t* ast_create_import(char* module_path, char* alias)
+{
+  ast_node_t* node = malloc(sizeof(ast_node_t));
+  node->type = AST_IMPORT;
+  node->data.import.module_path = strdup(module_path);
+  node->data.import.alias = alias ? strdup(alias) : NULL;
+  return node;
+}
+
+ast_node_t* ast_create_from_import(char* module_path, char* name, char* alias)
+{
+  ast_node_t* node = malloc(sizeof(ast_node_t));
+  node->type = AST_FROM_IMPORT;
+  node->data.from_import.module_path = strdup(module_path);
+  node->data.from_import.name = strdup(name);
+  node->data.from_import.alias = alias ? strdup(alias) : NULL;
+  return node;
+}
+
+ast_node_t* ast_create_from_import_list(char* module_path, char** import_names,
+                                        int import_count)
+{
+  ast_node_t* node = malloc(sizeof(ast_node_t));
+  node->type = AST_FROM_IMPORT_LIST;
+  node->data.from_import_list.module_path = strdup(module_path);
+  node->data.from_import_list.import_names = import_names;
+  node->data.from_import_list.import_count = import_count;
+  return node;
+}
+
+ast_node_t* ast_create_export(ast_node_t* declaration)
+{
+  ast_node_t* node = malloc(sizeof(ast_node_t));
+  node->type = AST_EXPORT;
+  node->data.export.declaration = declaration;
+  return node;
+}
+
+ast_node_t* ast_create_extern(ast_node_t* declaration)
+{
+  ast_node_t* node = malloc(sizeof(ast_node_t));
+  node->type = AST_EXTERN;
+  node->data.extern_decl.declaration = declaration;
+  return node;
+}
+
 void ast_free(ast_node_t* node)
 {
   if (!node)
@@ -201,6 +247,39 @@ void ast_free(ast_node_t* node)
 
     free(node->data.program.statements);
 
+    break;
+
+  case AST_IMPORT:
+    free(node->data.import.module_path);
+    if (node->data.import.alias)
+      free(node->data.import.alias);
+    break;
+
+  case AST_FROM_IMPORT:
+    free(node->data.from_import.module_path);
+    free(node->data.from_import.name);
+    if (node->data.from_import.alias)
+      free(node->data.from_import.alias);
+    break;
+
+  case AST_FROM_IMPORT_LIST:
+    free(node->data.from_import_list.module_path);
+
+    for (int i = 0; i < node->data.from_import_list.import_count; i++)
+    {
+      free(node->data.from_import_list.import_names[i]);
+    }
+
+    free(node->data.from_import_list.import_names);
+
+    break;
+
+  case AST_EXPORT:
+    ast_free(node->data.export.declaration);
+    break;
+
+  case AST_EXTERN:
+    ast_free(node->data.extern_decl.declaration);
     break;
 
   case AST_FUNCTION:
@@ -333,6 +412,57 @@ void ast_print(ast_node_t* node, int indent)
       ast_print(node->data.program.statements[i], indent + 1);
     }
 
+    break;
+
+  case AST_IMPORT:
+    printf("import %s", node->data.import.module_path);
+    if (node->data.import.alias)
+      printf(" as %s\n", node->data.import.alias);
+    printf("\n");
+    break;
+
+  case AST_FROM_IMPORT:
+    printf("from %s import ", node->data.from_import.module_path);
+
+    if (strcmp(node->data.from_import.name, "*") == 0)
+    {
+      printf("*\n");
+    }
+    else
+    {
+      printf("%s", node->data.from_import.name);
+      if (node->data.from_import.alias)
+        printf(" as %s\n", node->data.from_import.alias);
+    }
+
+    printf("\n");
+
+    break;
+
+  case AST_FROM_IMPORT_LIST:
+    printf("from %s import ", node->data.from_import_list.module_path);
+
+    for (int i = 0; i < node->data.from_import_list.import_count; i++)
+    {
+      printf("%s", node->data.from_import_list.import_names[i]);
+      if (i < node->data.from_import_list.import_count - 1)
+        printf(", ");
+    }
+
+    printf("\n");
+
+    break;
+
+  case AST_EXPORT:
+    printf("export ");
+    ast_print(node->data.export.declaration, indent);
+    printf("\n");
+    break;
+
+  case AST_EXTERN:
+    printf("extern ");
+    ast_print(node->data.extern_decl.declaration, indent);
+    printf("\n");
     break;
 
   case AST_FUNCTION:
