@@ -23,8 +23,6 @@
 "struct"        { return STRUCT; }
 "self"          { return SELF; }
 "."             { return '.'; }
-"def"           { return DEF; }
-"let"           { return LET; }
 "const"           { return CONST; }
 "if"            { return IF; }
 "else"          { return ELSE; }
@@ -51,7 +49,6 @@
 ">="            { return GE; }
 "&&"            { return AND; }
 "||"            { return OR; }
-"->"            { return ARROW; }
 
 "+"             { return '+'; }
 "-"             { return '-'; }

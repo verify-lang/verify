@@ -135,9 +135,9 @@ void reset_methods() {
 %token <bool_val> BOOL_LITERAL
 %token <string_val> STRING_LITERAL IDENTIFIER
 %token IMPORT EXPORT EXTERN FROM AS
-%token DEF LET CONST IF ELSE WHILE RETURN
+%token CONST IF ELSE WHILE RETURN
 %token INT_TYPE BOOL_TYPE STRING_TYPE
-%token EQ NE LE GE AND OR ARROW
+%token EQ NE LE GE AND OR
 %token STRUCT SELF
 
 %type <node> program statement_list statement function_def var_decl block
