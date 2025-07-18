@@ -1,6 +1,6 @@
 CC = clang
-CFLAGS = -Wall -Wextra -g -Iinclude
-LDFLAGS = -lfl
+CFLAGS = -Wall -Wextra -g -Iinclude -I/usr/include/llvm-c-14 -I/usr/include/llvm-14
+LDFLAGS = -lfl $(shell llvm-config --ldflags --libs core)
 
 SRCDIR = src
 INCDIR = include

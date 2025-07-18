@@ -2,12 +2,16 @@
 #include <stdlib.h>
 #include "ast.h"
 #include "parser.h"
+#include "codegen.h"
 
 extern FILE* yyin;
 extern ast_node_t* root;
 
 int main(int argc, char* argv[])
 {
+  codegen_context_t* ctx = codegen_context_create("test");
+  codegen_context_free(ctx);
+  return 0;
   if (argc > 1)
   {
     yyin = fopen(argv[1], "r");
